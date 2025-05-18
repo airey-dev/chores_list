@@ -2,7 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebas
 import { getDatabase,
          ref,
          push,
-         onValue } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"
+         onValue,
+         remove } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js"
 
 const firebaseConfig = {
     databaseURL: "https://choreslist-86076-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -28,13 +29,17 @@ function render(chores) {
 }
 
 onValue(referenceInDB, function(snapshot) {
-    const snapshotValues = snapshot.val()
-    const chores = Object.values(snapshotValues)
-    render(chores)
+    const snapshotDoesExist = snapshot.exists()
+    if (snapshotDoesExist) {
+        const snapshotValues = snapshot.val()
+        const chores = Object.values(snapshotValues)
+        render(chores)
+    } 
 })
 
 deleteAllButtonEl.addEventListener("dblclick", function() {
-    
+    remove(referenceInDB)
+    ulEl.innerHTML = ""
 })
 
 addButtonEl.addEventListener("click", function() {
